@@ -1,7 +1,19 @@
 import Link from "next/link";
+import Router from "next/router";
+import NProgress from "nprogress";
 import styled from "styled-components";
 
 import Nav from "./Nav";
+
+Router.onRouteChangeStart = () => {
+	NProgress.start();
+};
+Router.onRouteChangeComplete = () => {
+	NProgress.done();
+};
+Router.OnRouteChangeError = () => {
+	NProgress.done();
+};
 
 const Logo = styled.h1`
 	font-size: 4rem;
@@ -26,7 +38,7 @@ const StyledHeader = styled.header`
 	.bar {
 		border-bottom: 10px solid ${props => props.theme.black};
 		display: grid;
-		grid-template-columns: auto 1fr;
+		grid-template-rows: auto 1fr;
 		justify-content: space-between;
 		align-items: stretch;
 		@media (max-width: 1300px) {
