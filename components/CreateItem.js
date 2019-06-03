@@ -38,19 +38,41 @@ class CreateItem extends Component {
 
 	handleChange = event => {
 		const { name, type, value } = event.target;
-		const val = type === "number" ? formatMoney(parseFloat(value)) : value;
+		const val = type === "number" ? parseFloat(value) : value;
 		this.setState({ [name]: val });
 	};
 
+	uploadFile = async event => {
+		const files = event.target.files;
+		const data = new FormData();
+		data.append("file", files[0]);
+		data.append("upload_preset", "sickfits");
+
+		const res = await fetch(
+			"https://api.cloudinary.com/v1_1/digcho0qy/image/upload",
+			{
+				method: "POST",
+				body: data
+			}
+		);
+
+		const file = await res.json();
+		this.setState({
+			image: file.secure_url,
+			largeImage: file.eager[0].secure_url
+		});
+	};
+
 	render() {
-		const { title, description, image, largeImage, price } = this.state;
-		const { handleChange, state } = this;
+		const { title, description, price, image, largeImage } = this.state;
+		const { handleChange, uploadFile, state } = this;
 
 		return (
 			<Mutation mutation={CREATE_ITEM_MUTATION} variables={state}>
 				{(createItem, { loading, error }) => (
 					<Form
 						onSubmit={async event => {
+							if (!image || !largeImage) return;
 							// Stop the form from submitting
 							event.preventDefault();
 							// call the mutation
@@ -63,6 +85,24 @@ class CreateItem extends Component {
 					>
 						<Error error={error} />
 						<fieldset disabled={loading} aria-busy={loading}>
+							<label htmlFor="file">
+								Image
+								<input
+									type="file"
+									id="file"
+									name="file"
+									placeholder="Upload an Image"
+									onChange={uploadFile}
+									required
+								/>
+								{image && (
+									<img
+										src={image}
+										width="200"
+										alt="Upload Preview"
+									/>
+								)}
+							</label>
 							<label htmlFor="title">
 								Title
 								<input
