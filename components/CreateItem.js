@@ -5,7 +5,6 @@ import gql from "graphql-tag";
 
 import Error from "./ErrorMessage";
 import Form from "./styles/Form";
-import formatMoney from "../lib/formatMoney";
 
 const CREATE_ITEM_MUTATION = gql`
 	mutation CREATE_ITEM_MUTATION(
