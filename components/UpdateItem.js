@@ -62,7 +62,7 @@ class UpdateItem extends Component {
 
 	render() {
 		const { id } = this.props;
-		const { handleChange, updateItem } = this;
+		const { handleChange, updateItem, state } = this;
 
 		return (
 			<Query query={SINGLE_ITEM_QUERY} variables={{ id }}>
@@ -70,7 +70,10 @@ class UpdateItem extends Component {
 					if (loading) return <p>Loading...</p>;
 					if (!data.item) return <p>No Item Found for ID:{id}</p>;
 					return (
-						<Mutation mutation={UPDATE_ITEM_MUTATION}>
+						<Mutation
+							mutation={UPDATE_ITEM_MUTATION}
+							variables={state}
+						>
 							{(updateItemMutation, { loading, error }) => (
 								<Form
 									onSubmit={event =>

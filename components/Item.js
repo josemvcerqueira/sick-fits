@@ -2,6 +2,7 @@ import { PureComponent } from "react";
 import Link from "next/link";
 import PropTypes from "prop-types";
 
+import DeleteItem from "./DeleteItem";
 import formatMoney from "../lib/formatMoney";
 import Title from "./styles/Title";
 import ItemStyles from "./styles/ItemStyles";
@@ -34,7 +35,7 @@ class Item extends PureComponent {
 						<a>Edit 🖋</a>
 					</Link>
 					<button>Add To Cart</button>
-					<button>Delete</button>
+					<DeleteItem id={item.id}>Delete This Item</DeleteItem>
 				</div>
 			</ItemStyles>
 		);
