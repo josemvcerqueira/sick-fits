@@ -46,7 +46,9 @@ class DeleteItem extends Component {
 										"Are you sure you want to delete this item?"
 									)
 								) {
-									deleteItemMutation();
+									deleteItemMutation().catch(error => {
+										alert(error.message);
+									});
 								}
 							}}
 						>
