@@ -5,6 +5,7 @@ import gql from "graphql-tag";
 import Table from "./styles/Table";
 import SickButton from "./styles/SickButton";
 import Error from "./ErrorMessage";
+import PropTypes from "prop-types";
 
 const possiblePermissions = [
 	"ADMIN",
@@ -47,7 +48,10 @@ const Permissions = props => (
 							</thead>
 							<tbody>
 								{data.users.map(user => (
-									<User key={user.id} user={user} />
+									<UserPermissions
+										key={user.id}
+										user={user}
+									/>
 								))}
 							</tbody>
 						</Table>
@@ -58,9 +62,40 @@ const Permissions = props => (
 	</Query>
 );
 
-class User extends PureComponent {
+class UserPermissions extends PureComponent {
+	static propTypes = {
+		user: PropTypes.shape({
+			name: PropTypes.string,
+			email: PropTypes.string,
+			id: PropTypes.string,
+			permissions: PropTypes.array
+		}).isRequired
+	};
+
+	state = {
+		permissions: this.props.user.permissions
+	};
+
+	handlePermissionChange = event => {
+		const checkbox = event.target;
+		// take a copy of the current permissions
+		let updatedPermissions = [...this.state.permissions];
+		// figure out if we need to remove or add this permission
+		if (checkbox.checked) {
+			// add it in
+			updatedPermissions.push(checkbox.value);
+		} else {
+			updatedPermissions = updatedPermissions.filter(
+				permission => permission !== checkbox.value
+			);
+		}
+		this.setState({ permissions: updatedPermissions });
+	};
+
 	render() {
 		const { user } = this.props;
+		const { permissions } = this.state;
+		const { handlePermissionChange } = this;
 		return (
 			<tr>
 				<td>{user.name}</td>
@@ -68,7 +103,12 @@ class User extends PureComponent {
 				{possiblePermissions.map(permission => (
 					<td key={permission}>
 						<label htmlFor={`${user.id}-permission-${permission}`}>
-							<input type="checkbox" />
+							<input
+								type="checkbox"
+								checked={permissions.includes(permission)}
+								value={permission}
+								onChange={handlePermissionChange}
+							/>
 						</label>
 					</td>
 				))}
