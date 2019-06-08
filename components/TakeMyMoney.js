@@ -10,6 +10,20 @@ import User, { CURRENT_USER_QUERY } from "./User";
 import calcTotalPrice from "../lib/calcTotalPrice";
 import Error from "./ErrorMessage";
 
+const CREATE_ORDER_MUTATION = gql`
+	mutation createOrder($token: String!) {
+		createOrder(token: $token) {
+			id
+			charge
+			total
+			items {
+				id
+				title
+			}
+		}
+	}
+`;
+
 function totalItems(cart) {
 	return cart.reduce((acc, cartItem) => acc + cartItem.quantity, 0);
 }
@@ -19,9 +33,17 @@ class TakeMyMoney extends Component {
 		name: PropTypes.string
 	};
 
-	onToken = response => {
+	onToken = (response, createOrder) => {
 		console.log("On token called!");
 		console.log(response);
+		// manually call the mutation once we have the stripe token
+		createOrder({
+			variables: {
+				token: response.id
+			}
+		}).catch(err => {
+			alert(err.message);
+		});
 	};
 
 	render() {
@@ -30,18 +52,25 @@ class TakeMyMoney extends Component {
 		return (
 			<User>
 				{({ data: { me } }) => (
-					<StripeCheckout
-						amount={calcTotalPrice(me.cart)}
-						name="Sick Fits"
-						description={`Order of ${totalItems(me.cart)}`}
-						image={me.cart[0].item && me.cart[0].item.image}
-						stripeKey="pk_test_sFFpS5N2YLPOkIMvpX2FZbe600gfYLitiH"
-						currency="USD"
-						email={me.email}
-						token={res => this.onToken(res)}
+					<Mutation
+						mutation={CREATE_ORDER_MUTATION}
+						refetchQueries={[{ query: CURRENT_USER_QUERY }]}
 					>
-						{children}
-					</StripeCheckout>
+						{createOrder => (
+							<StripeCheckout
+								amount={calcTotalPrice(me.cart)}
+								name="Sick Fits"
+								description={`Order of ${totalItems(me.cart)}`}
+								image={me.cart[0].item && me.cart[0].item.image}
+								stripeKey="pk_test_sFFpS5N2YLPOkIMvpX2FZbe600gfYLitiH"
+								currency="USD"
+								email={me.email}
+								token={res => this.onToken(res, createOrder)}
+							>
+								{children}
+							</StripeCheckout>
+						)}
+					</Mutation>
 				)}
 			</User>
 		);
