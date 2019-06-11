@@ -31,6 +31,7 @@ class RequestReset extends Component {
 					return (
 						<Form
 							method="post"
+							data-test="form"
 							onSubmit={async event => {
 								event.preventDefault();
 								await reset();
@@ -67,4 +68,5 @@ class RequestReset extends Component {
 	}
 }
 
+export { REQUEST_RESET_MUTATION };
 export default RequestReset;
