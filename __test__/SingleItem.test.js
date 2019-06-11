@@ -1,8 +1,7 @@
 import { mount } from "enzyme";
 import toJSON from "enzyme-to-json";
 import wait from "waait";
-import SingleItem from "../components/SingleItem";
-import { SINGLE_ITEM_QUERY } from "../components/SingleItem";
+import SingleItem, { SINGLE_ITEM_QUERY } from "../components/SingleItem";
 import { MockedProvider } from "react-apollo/test-utils";
 import { fakeItem } from "../lib/testUtils";
 
