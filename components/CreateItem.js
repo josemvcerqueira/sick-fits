@@ -56,6 +56,7 @@ class CreateItem extends Component {
 		);
 
 		const file = await res.json();
+
 		this.setState({
 			image: file.secure_url,
 			largeImage: file.eager[0].secure_url
@@ -70,6 +71,7 @@ class CreateItem extends Component {
 			<Mutation mutation={CREATE_ITEM_MUTATION} variables={state}>
 				{(createItem, { loading, error }) => (
 					<Form
+						data-test="form"
 						onSubmit={async event => {
 							if (!image || !largeImage) return;
 							// Stop the form from submitting
