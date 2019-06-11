@@ -66,4 +66,5 @@ class SingleItem extends PureComponent {
 	}
 }
 
+export { SINGLE_ITEM_QUERY };
 export default SingleItem;
