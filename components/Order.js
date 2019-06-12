@@ -107,4 +107,5 @@ class Order extends Component {
 	}
 }
 
+export { SINGLE_ORDER_QUERY };
 export default Order;
