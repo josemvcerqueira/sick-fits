@@ -38,7 +38,6 @@ class Order extends Component {
 
 	render() {
 		const { id } = this.props;
-		console.log(id);
 		return (
 			<Query query={SINGLE_ORDER_QUERY} variables={{ id }}>
 				{({ data, error, loading }) => {
@@ -46,7 +45,7 @@ class Order extends Component {
 					if (loading) return <p>Loading...</p>;
 					const order = data.order;
 					return (
-						<OrderStyles>
+						<OrderStyles data-test="order">
 							<Head>
 								<title>Sick Fits - Order {order.id}</title>
 							</Head>
